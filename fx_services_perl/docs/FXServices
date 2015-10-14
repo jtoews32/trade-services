@@ -1,0 +1,28 @@
+root>mysqld
+
+/usr/bin/mysql -uroot -padminadmin stockwatch < /home/jtoews/workspace/fx_services_sql/WebContent/currency_statistics_v3_period_roll_procedure.sql
+/usr/bin/mysql -uroot -padminadmin stockwatch < /home/jtoews/workspace/fx_services_sql/WebContent/currency_statistics_v3_period_roll_procedure.sql
+/usr/bin/mysql -uroot -padminadmin stockwatch < /home/jtoews/workspace/fx_services_sql/WebContent/currency_statistics_v4_period_diffs_procedure.sql
+
+
+/usr/bin/perl /home/jtoews/workspace/fx_services_perl/currency_quote_collector.pl
+
+cd /home/jtoews/workspace/TradeInterface2/
+ant war
+
+cd /home/jtoews/apache-tomcat-6.0.20/bin
+./startup.sh
+
+
+http://localhost:8081/TradeInterface2/TradeFXEntryPoint.html
+
+Note:
+	Prior to building: 
+	
+	tradefx.TradeFXEntryPoint.gwt.xml has to point at the correct entry point.
+	
+	Possibilities are:
+	
+	<entry-point class='tradefx.client.TradeFXEntryPoint'/>
+	<entry-point class='tradefx.client.SFNewsStudioEntryPoint'/>
+		

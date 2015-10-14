@@ -1,0 +1,287 @@
+var restUrl="http://localhost:8081/SOXComply/resources/";
+
+function callCONTROL() {
+
+}
+function callCURRENCY_VALUES() {
+
+}
+function callDESIGN_EFF() {
+
+}
+function callEFF_DATE() {
+
+}
+function callEMAIL_RECORD() {
+
+}
+function callFREQUENCY() {
+
+}
+function callGAPS_QA() {
+
+}
+function callGRAPH_NAME() {
+
+}
+function callGRAPH_VALUES() {
+
+}
+function callJOB_SCHEDULE() {
+
+}
+function callNAME_MAPPING() {
+
+}
+function callOBJECTIVE() {
+
+}
+function callOPERATING_EFF() {
+
+}
+function callOWNER() {
+
+}
+function callOWNER_MAPPING() {
+
+}
+function callOWNER_PARENT() {
+
+}
+function callOWNER_VIEW() {
+
+}
+function callPREVENTION() {
+
+}
+function callREF() {
+
+}
+function callRISK_NON_ACHIEVED() {
+
+}
+function callSOURCE() {
+
+}
+function callSOX_TABLES() {
+
+}
+function callSOX_TABLE_NAMES() {
+
+}
+function callSTOCK_VALUES() {
+
+}
+function callSYS_MANUAL() {
+
+}
+function callTEST_REF() {
+
+}
+
+
+function SOX_TABLES(TABLE_NAME) {
+	this.TABLE_NAME=TABLE_NAME;
+}
+
+function EFF_DATE(ID,MID,EFF_DATE_TEXT,CREATED) {
+	this.ID=ID;
+	this.MID=MID;
+	this.EFF_DATE_TEXT=EFF_DATE_TEXT;
+	this.CREATED=CREATED;
+}
+
+function GAPS_QA(ID,MID,ROW_ID,CONTROL,CREATED) {
+	this.ID=ID;
+	this.MID=MID;
+	this.ROW_ID=ROW_ID;
+	this.CONTROL=CONTROL;
+	this.CREATED=CREATED;
+}
+
+function EMAIL_RECORD(ID,MID,CREATED,SUBJECT,SEND_EML,RECV_EML,CC_EML,MESSAGE) {
+	this.ID=ID;
+	this.MID=MID;
+	this.CREATED=CREATED;
+	this.SUBJECT=SUBJECT;
+	this.SEND_EML=SEND_EML;
+	this.RECV_EML=RECV_EML;
+	this.CC_EML=CC_EML;
+	this.MESSAGE=MESSAGE;
+}
+
+function TEST_REF(ID,MID,ROW_ID,CONTROL,CREATED) {
+	this.ID=ID;
+	this.MID=MID;
+	this.ROW_ID=ROW_ID;
+	this.CONTROL=CONTROL;
+	this.CREATED=CREATED;
+}
+
+function RISK_NON_ACHIEVED(ID,MID,CREATED,RISK) {
+	this.ID=ID;
+	this.MID=MID;
+	this.CREATED=CREATED;
+	this.RISK=RISK;
+}
+
+function OWNER_VIEW(ID,ROW_NUMBER,OWNER_NAME) {
+	this.ID=ID;
+	this.ROW_NUMBER=ROW_NUMBER;
+	this.OWNER_NAME=OWNER_NAME;
+}
+
+function OBJECTIVE(ID,MID,ROW_ID,CREATED,CONTROL) {
+	this.ID=ID;
+	this.MID=MID;
+	this.ROW_ID=ROW_ID;
+	this.CREATED=CREATED;
+	this.CONTROL=CONTROL;
+}
+
+function CURRENCY_VALUES(ID,READ_COUNT,USD_VALUE,CROSS_VALUE,CROSS_NAME,CREATED) {
+	this.ID=ID;
+	this.READ_COUNT=READ_COUNT;
+	this.USD_VALUE=USD_VALUE;
+	this.CROSS_VALUE=CROSS_VALUE;
+	this.CROSS_NAME=CROSS_NAME;
+	this.CREATED=CREATED;
+}
+
+function SOX_TABLE_NAMES(TABLE_NAME,COLUMN_NAME,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH) {
+	this.TABLE_NAME=TABLE_NAME;
+	this.COLUMN_NAME=COLUMN_NAME;
+	this.DATA_TYPE=DATA_TYPE;
+	this.CHARACTER_MAXIMUM_LENGTH=CHARACTER_MAXIMUM_LENGTH;
+}
+
+function DESIGN_EFF(ID,MID,ROW_ID,CONTROL,CREATED) {
+	this.ID=ID;
+	this.MID=MID;
+	this.ROW_ID=ROW_ID;
+	this.CONTROL=CONTROL;
+	this.CREATED=CREATED;
+}
+
+function NAME_MAPPING(ID,TABLE_NAME,REST_NAME,ID,TABLE_NAME,REST_NAME) {
+	this.ID=ID;
+	this.TABLE_NAME=TABLE_NAME;
+	this.REST_NAME=REST_NAME;
+	this.ID=ID;
+	this.TABLE_NAME=TABLE_NAME;
+	this.REST_NAME=REST_NAME;
+}
+
+function GRAPH_NAME(ID,NAME,X_AXIS,Y_AXIS,CREATED,ID,NAME,X_AXIS,Y_AXIS,CREATED) {
+	this.ID=ID;
+	this.NAME=NAME;
+	this.X_AXIS=X_AXIS;
+	this.Y_AXIS=Y_AXIS;
+	this.CREATED=CREATED;
+	this.ID=ID;
+	this.NAME=NAME;
+	this.X_AXIS=X_AXIS;
+	this.Y_AXIS=Y_AXIS;
+	this.CREATED=CREATED;
+}
+
+function SYS_MANUAL(ID,MID,ROW_ID,CONTROL,CREATED) {
+	this.ID=ID;
+	this.MID=MID;
+	this.ROW_ID=ROW_ID;
+	this.CONTROL=CONTROL;
+	this.CREATED=CREATED;
+}
+
+function STOCK_VALUES(ID,READ_COUNT,USD_PRICE,CREATED) {
+	this.ID=ID;
+	this.READ_COUNT=READ_COUNT;
+	this.USD_PRICE=USD_PRICE;
+	this.CREATED=CREATED;
+}
+
+function OWNER_PARENT(ID,MID,ROW_NUM_ID,CREATED) {
+	this.ID=ID;
+	this.MID=MID;
+	this.ROW_NUM_ID=ROW_NUM_ID;
+	this.CREATED=CREATED;
+}
+
+function OPERATING_EFF(ID,MID,ROW_ID,CONTROL,CREATED) {
+	this.ID=ID;
+	this.MID=MID;
+	this.ROW_ID=ROW_ID;
+	this.CONTROL=CONTROL;
+	this.CREATED=CREATED;
+}
+
+function FREQUENCY(ID,MID,ROW_ID,CONTROL,CREATED) {
+	this.ID=ID;
+	this.MID=MID;
+	this.ROW_ID=ROW_ID;
+	this.CONTROL=CONTROL;
+	this.CREATED=CREATED;
+}
+
+function JOB_SCHEDULE(ID,MID,ROW_ID,CONTROL_NEXT_RUN,CONTROL_EFF_DT,CONTROL_EFF_DT_TEXT,CONTROL_PREV_RUN) {
+	this.ID=ID;
+	this.MID=MID;
+	this.ROW_ID=ROW_ID;
+	this.CONTROL_NEXT_RUN=CONTROL_NEXT_RUN;
+	this.CONTROL_EFF_DT=CONTROL_EFF_DT;
+	this.CONTROL_EFF_DT_TEXT=CONTROL_EFF_DT_TEXT;
+	this.CONTROL_PREV_RUN=CONTROL_PREV_RUN;
+}
+
+function GRAPH_VALUES(ID,GRAPH_ID,X_AXIS_VALUE,Y_AXIS_VALUE,CREATED,X_AXIS) {
+	this.ID=ID;
+	this.GRAPH_ID=GRAPH_ID;
+	this.X_AXIS_VALUE=X_AXIS_VALUE;
+	this.Y_AXIS_VALUE=Y_AXIS_VALUE;
+	this.CREATED=CREATED;
+	this.X_AXIS=X_AXIS;
+}
+
+function CONTROL(ID,MID,ROW_ID,CREATED,TASK) {
+	this.ID=ID;
+	this.MID=MID;
+	this.ROW_ID=ROW_ID;
+	this.CREATED=CREATED;
+	this.TASK=TASK;
+}
+
+function SOURCE(ID,MID,ROW_ID,CONTROL,CREATED) {
+	this.ID=ID;
+	this.MID=MID;
+	this.ROW_ID=ROW_ID;
+	this.CONTROL=CONTROL;
+	this.CREATED=CREATED;
+}
+
+function OWNER_MAPPING(ID,PARENT_ID,OWNER_ID,CREATED) {
+	this.ID=ID;
+	this.PARENT_ID=PARENT_ID;
+	this.OWNER_ID=OWNER_ID;
+	this.CREATED=CREATED;
+}
+
+function OWNER(ID,OWNER_NAME,CREATED) {
+	this.ID=ID;
+	this.OWNER_NAME=OWNER_NAME;
+	this.CREATED=CREATED;
+}
+
+function PREVENTION(ID,MID,ROW_ID,CONTROL,CREATED) {
+	this.ID=ID;
+	this.MID=MID;
+	this.ROW_ID=ROW_ID;
+	this.CONTROL=CONTROL;
+	this.CREATED=CREATED;
+}
+
+function REF(ID,MID,REF_NUM,CREATED) {
+	this.ID=ID;
+	this.MID=MID;
+	this.REF_NUM=REF_NUM;
+	this.CREATED=CREATED;
+}

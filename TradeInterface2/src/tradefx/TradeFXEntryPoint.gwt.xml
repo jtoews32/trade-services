@@ -1,0 +1,23 @@
+<module>
+
+	<!-- Inherit the core Web Toolkit stuff.                  -->
+	<inherits name='com.google.gwt.user.User'/>
+
+  	<!--inherits name='com.extjs.gxt.samples.resources.Resources' / -->
+  	<inherits name='com.extjs.gxt.themes.Themes' />
+  	<inherits name='com.extjs.gxt.charts.Chart' />
+  
+0
+	<inherits name='com.google.gwt.user.User'/>
+	<inherits name='com.extjs.gxt.ui.GXT'/>
+	<inherits name="com.google.gwt.http.HTTP"/>
+  	<inherits name="com.google.gwt.user.theme.standard.Standard"/>
+  	
+  	
+	<!-- Specify the app entry point class.                   -->
+	<entry-point class='tradefx.client.TradeFXEntryPoint'/>
+
+  	<!-- <inherits name="com.google.gwt.user.theme.chrome.Chrome"/> -->
+  	<!-- <inherits name="com.google.gwt.user.theme.dark.Dark"/> -->
+  	
+</module>

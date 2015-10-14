@@ -1,0 +1,398 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>USD Wins and Losses</title>
+    <style type="text/css">
+        @import "jscript/dijit/themes/tundra/tundra.css";
+        @import "jscript/dojo/resources/dojo.css"
+    </style>
+
+	<script type="text/javascript" src="XHConn.js"></script>
+    <script type="text/javascript" src="jscript/dojo/dojo.js" djConfig="parseOnLoad: true"></script>
+    <script type="text/javascript">
+
+ 	dojo.require("dojox.charting.Chart2D");
+ 	dojo.require("dojox.charting.themes.PlotKit.green");
+
+ 	dojo.require("dojox.charting.action2d.Highlight");
+ 	dojo.require("dojox.charting.action2d.Magnify");
+ 	dojo.require("dojox.charting.action2d.MoveSlice");
+ 	dojo.require("dojox.charting.action2d.Shake");
+ 	dojo.require("dojox.charting.action2d.Tooltip");
+
+ 	dojo.require("dojox.charting.widget.Legend");
+
+ 	dojo.require("dojo.colors");
+ 	dojo.require("dojo.fx.easing");
+ 	 	
+
+ 	var _MAX = 22;
+ 	var projectName = "/CurrencyWeb/";	
+ 	var startMax = "start=0&max=30";
+ 	var gapSz = 0;
+ 	
+	function diffJPY() {
+		var myConn = new XHConn();
+	  	// myConn.connect(projectName + "resources/tradeSessionChangeJpies/", "GET",startMax, jpyHash); 
+
+	  	myConn.connect(projectName + "resources/tradeSessionChangeJpies/", "GET", startMax, jpyHash);
+	  				
+
+		// application/json 
+	  	
+		function jpyHash(http_request) {
+
+			var xmldoc = http_request.responseXML;
+
+			var usdArrayUp = new Array();
+			var usdArrayDown = new Array();
+
+			var i = 0;
+			
+			for (i=0;i<_MAX;i++)
+			{				
+				var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+				// var crossCurrency= xmldoc.getElementsByTagName("crossCurrency")[i].textContent;
+				var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+				// var id= xmldoc.getElementsByTagName("id")[i].textContent;
+				var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+				if(parseInt(dollarUp)==0 ) {
+					usdArrayUp[parseInt(tradeSession)-1] = 0; 
+					usdArrayDown[parseInt(tradeSession)-1] = parseInt( diff );  
+				} else {
+					usdArrayDown[parseInt(tradeSession)-1] = 0; 
+					usdArrayUp[parseInt(tradeSession)-1] = parseInt( diff ); 
+				} 			
+			}
+
+			var dc = dojox.charting;
+
+			var chart3 = new dc.Chart2D("chartJPY");
+			chart3.setTheme(dc.themes.PlotKit.green);
+			chart3.addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major"});
+			chart3.addPlot("default", {type: "Columns", gap: gapSz});
+			chart3.addSeries("Series A", usdArrayUp, {stroke: {color: "black"}, fill: "black"});
+			chart3.addSeries("Series B", usdArrayDown, {stroke: {color: "black"}, fill: "orange"});
+
+			var anim3a = new dc.action2d.Highlight(chart3, "default");
+			var anim3b = new dc.action2d.Tooltip(chart3, "default");
+			chart3.render();			
+		}
+	}
+
+
+	function diffCHF() {
+		var myConn = new XHConn();
+	  	//myConn.connect(projectName + "resources/tradeSessionChangeChfs/", "GET", startMax, chfHash); 
+
+	  	myConn.connect(projectName + "resources/tradeSessionChangeChfs/", "GET", startMax, chfHash);
+	  	
+	  	
+		function chfHash(http_request) {
+	 		var xmldoc = http_request.responseXML;
+	 		
+			var usdArrayUp = new Array();
+			var usdArrayDown = new Array();
+
+			var i = 0;
+			for (i=0;i<_MAX;i++)
+			{				
+				var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+				var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+				var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+				
+				if( parseInt(dollarUp) == 0 ) {
+					usdArrayUp[parseInt(tradeSession)-1] = 0; 
+					usdArrayDown[parseInt(tradeSession)-1] = parseInt( diff );  
+				} else {
+					usdArrayDown[parseInt(tradeSession)-1] = 0; 
+					usdArrayUp[parseInt(tradeSession)-1] = parseInt( diff ); 
+				} 			
+			}
+
+			var dc = dojox.charting;
+			var chart = new dc.Chart2D("chartCHF");
+			chart.setTheme(dc.themes.PlotKit.green);
+			
+			chart.addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major"});
+			chart.addPlot("default", {type: "Columns", gap: gapSz});
+			chart.addSeries("USD Win", usdArrayUp, {stroke: {color: "black"}, fill: "black"});
+			chart.addSeries("CHF Win", usdArrayDown, {stroke: {color: "black"}, fill: "red"});
+
+			var anim3a = new dc.action2d.Highlight(chart, "default");
+			var anim3b = new dc.action2d.Tooltip(chart, "default");
+			// var legend3 = new dojox.charting.widget.Legend({chart: chart, horizontal: false}, "legendCHF");
+
+			
+			chart.render();		
+		}
+	}
+		
+
+	function diffGBP() {
+		var myConn = new XHConn();
+	  	// myConn.connect(projectName + "resources/tradeSessionChangeGbps/", "GET", startMax, gbpHash); 
+	  	myConn.connect(projectName + "resources/tradeSessionChangeGbps/", "GET", startMax, gbpHash);
+	  	
+		function gbpHash(http_request) {
+	 		var xmldoc = http_request.responseXML;
+
+			var usdArrayUp = new Array();
+			var usdArrayDown = new Array();
+
+			var i = 0;
+			
+			for (i=0;i<_MAX;i++)
+			{				
+				var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+				// var crossCurrency= xmldoc.getElementsByTagName("crossCurrency")[i].textContent;
+				var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+				// var id= xmldoc.getElementsByTagName("id")[i].textContent;
+				var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+				if( parseInt(dollarUp) == 0 ) {
+					usdArrayUp[parseInt(tradeSession)-1] = 0; 
+					usdArrayDown[parseInt(tradeSession)-1] = parseInt( diff );  
+				} else {
+					usdArrayDown[parseInt(tradeSession)-1] = 0; 
+					usdArrayUp[parseInt(tradeSession)-1] = parseInt( diff ); 
+				} 			
+			}
+
+			var dc = dojox.charting;
+			var chart = new dc.Chart2D("chartGBP");
+			chart.setTheme(dc.themes.PlotKit.green);
+			
+			chart.addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major"});
+			chart.addPlot("default", {type: "Columns", gap: gapSz});
+			chart.addSeries("Series A", usdArrayUp, {stroke: {color: "black"}, fill: "black"});
+			chart.addSeries("Series B", usdArrayDown, {stroke: {color: "black"}, fill: "green"});
+
+			var anim3a = new dc.action2d.Highlight(chart, "default");
+			var anim3b = new dc.action2d.Tooltip(chart, "default");
+			chart.render();		
+		}
+	}
+
+
+	function diffEUR() {
+		var myConn = new XHConn();
+	  	// myConn.connect(projectName + "resources/tradeSessionChangeEurs/", "GET", startMax, eurHash); 
+
+	  	myConn.connect(projectName + "resources/tradeSessionChangeEurs/", "GET", startMax, eurHash);
+	  	
+		function eurHash(http_request) {
+	 		var xmldoc = http_request.responseXML;
+			var usdArrayUp = new Array();
+			var usdArrayDown = new Array();
+
+			var i = 0;
+
+			for (i=0;i<_MAX;i++)
+			{				
+				var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+				// var crossCurrency= xmldoc.getElementsByTagName("crossCurrency")[i].textContent;
+				var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+				// var id= xmldoc.getElementsByTagName("id")[i].textContent;
+				var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+				if( parseInt(dollarUp) == 0 ) {
+					usdArrayUp[parseInt(tradeSession)-1] = 0; 
+					usdArrayDown[parseInt(tradeSession)-1] = parseInt( diff );  
+				} else {
+					usdArrayDown[parseInt(tradeSession)-1] = 0; 
+					usdArrayUp[parseInt(tradeSession)-1] = parseInt( diff ); 
+				} 			
+			}
+
+			var dc = dojox.charting;
+			var chart = new dc.Chart2D("chartEUR");
+			chart.setTheme(dc.themes.PlotKit.green);
+			
+			chart.addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major"});
+			chart.addPlot("default", {type: "Columns", gap: gapSz});
+			chart.addSeries("USD Win", usdArrayUp, {stroke: {color: "black"}, fill: "black"});
+			chart.addSeries("EUR Win", usdArrayDown, {stroke: {color: "black"}, fill: "blue"});
+
+			var anim3a = new dc.action2d.Highlight(chart, "default");
+			var anim3b = new dc.action2d.Tooltip(chart, "default");
+			chart.render();		
+		}
+	}
+
+		
+	function diffCAD() {
+		var myConn = new XHConn();
+	  	// myConn.connect(projectName + "resources/tradeSessionChangeCads/", "GET", startMax, cadHash); 
+
+	  	myConn.connect(projectName + "resources/tradeSessionChangeCads/", "GET", startMax, cadHash); 
+	  	
+		function cadHash(http_request) {
+	 		var xmldoc = http_request.responseXML;
+			var usdArrayUp = new Array();
+			var usdArrayDown = new Array();
+
+			var i = 0;
+
+			for (i=0;i<_MAX;i++)
+			{				
+				var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+				// var crossCurrency= xmldoc.getElementsByTagName("crossCurrency")[i].textContent;
+				var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+				// var id= xmldoc.getElementsByTagName("id")[i].textContent;
+				var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+				if( parseInt(dollarUp) == 0 ) {
+					usdArrayUp[parseInt(tradeSession)-1] = 0; 
+					usdArrayDown[parseInt(tradeSession)-1] = parseInt( diff );  
+				} else {
+					usdArrayDown[parseInt(tradeSession)-1] = 0; 
+					usdArrayUp[parseInt(tradeSession)-1] = parseInt( diff ); 
+				} 			
+			}
+
+			var dc = dojox.charting;
+			var chart = new dc.Chart2D("chartCAD");
+			chart.setTheme(dc.themes.PlotKit.green);
+			
+			chart.addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major"});
+			chart.addPlot("default", {type: "Columns", gap: gapSz});
+			chart.addSeries("Series A", usdArrayUp, {stroke: {color: "black"}, fill: "black"});
+			chart.addSeries("Series B", usdArrayDown, {stroke: {color: "black"}, fill: "yellow"});
+
+			var anim3a = new dc.action2d.Highlight(chart, "default");
+			var anim3b = new dc.action2d.Tooltip(chart, "default");
+			chart.render();	
+		}
+	}
+
+
+	function diffAUD() {
+		var myConn = new XHConn();
+	  	// myConn.connect(projectName + "resources/tradeSessionChangeAuds/", "GET", startMax, audHash); 
+
+	  	myConn.connect(projectName + "resources/tradeSessionChangeAuds/", "GET", startMax, audHash); 
+	  	
+		function audHash(http_request) {
+
+	 		var xmldoc = http_request.responseXML;
+	 		
+			var usdArrayUp = new Array();
+			var usdArrayDown = new Array();
+
+			var i = 0;
+
+			for (i=0;i<_MAX;i++)
+			{				
+				var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+				// var crossCurrency= xmldoc.getElementsByTagName("crossCurrency")[i].textContent;
+				var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+				// var id= xmldoc.getElementsByTagName("id")[i].textContent;
+				var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+				if( parseInt(dollarUp) == 0 ) {
+					usdArrayUp[parseInt(tradeSession)-1] = 0; 
+					usdArrayDown[parseInt(tradeSession)-1] = parseInt( diff );  
+				} else {
+					usdArrayDown[parseInt(tradeSession)-1] = 0; 
+					usdArrayUp[parseInt(tradeSession)-1] = parseInt( diff ); 
+				} 			
+			}
+
+			var dc = dojox.charting;
+			var chart = new dc.Chart2D("chartAUD");
+			chart.setTheme(dc.themes.PlotKit.green);
+			
+			chart.addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major"});
+			chart.addPlot("default", {type: "Columns", gap: gapSz});
+			chart.addSeries("Series A", usdArrayUp, {stroke: {color: "black"}, fill: "black"});
+			chart.addSeries("Series B", usdArrayDown, {stroke: {color: "black"}, fill: "purple"});
+
+			var anim3a = new dc.action2d.Highlight(chart, "default");
+			var anim3b = new dc.action2d.Tooltip(chart, "default");
+			chart.render();	
+		}
+	}
+
+function makeRestCharts() {
+
+	var myConn = new XHConn();
+  	myConn.connect(projectName + "resources/sessionRefMaxes/0/", "GET", startMax, restChartHash); 
+  	
+	function restChartHash(http_request) {
+
+ 		var xmldoc = http_request.responseXML;
+
+ 		_MAX = parseInt( xmldoc.getElementsByTagName("maxSession")[0].textContent )-1; // = 
+
+ 		
+ 		 diffCHF();	
+ 		 diffJPY();	
+ 		 diffGBP();
+ 		 diffEUR();
+ 		 diffCAD();
+ 		 diffAUD();
+
+	}
+}
+
+	 
+makeCharts = function() {
+	makeRestCharts();
+}
+
+dojo.addOnLoad(makeCharts);
+
+</script>
+</head>
+
+<body class="tundra">
+	<center>
+	<table border="0" cellspacing="0" cellpadding="7">
+		<tr>
+			<td>
+				<h1>Black=USD Wins vs. CHF</h1><br>	
+				<div id="chartCHF" style="width: 500px; height: 500px;"></div>
+				<!--   div id="legendCHF"></div -->
+			</td>
+			<td>
+				<h1>Black=USD Wins vs. AUD</h1><br>		
+				<div id="chartAUD" style="width: 500px; height: 500px;"></div>
+				<!-- div id="legendAUD"></div -->
+			</td>
+			
+		</tr>
+		<tr>	
+			<td>
+				<h1>Black=USD Wins vs. JPY</h1><br>		
+				<div id="chartJPY" style="width: 500px; height: 500px;"></div>
+				<!-- div id="legendJPY"></div -->
+			</td>	
+
+
+			<td>
+				<h1>Black=USD Wins vs. GBP</h1><br>	
+				<div id="chartGBP" style="width: 500px; height: 500px;"></div>
+				<!--  div id="legendGBP"></div -->
+			</td>
+		</tr>
+		<tr>		
+			<td>
+				<h1>Black=USD Wins vs. EUR</h1><br>		
+				<div id="chartEUR" style="width: 500px; height: 500px;"></div>
+				<!-- div id="legendEUR"></div -->
+			</td>
+			<td>
+				<h1>Black=USD Wins vs. CAD</h1><br>	
+				<div id="chartCAD" style="width: 500px; height: 500px;"></div>
+				<!-- div id="legendCAD"></div -->
+			</td>
+		</tr>
+
+	</table> 
+	</center>
+</body></html>
+

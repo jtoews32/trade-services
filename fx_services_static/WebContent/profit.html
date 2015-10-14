@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>Styling Lines, Borders and Fills</title>
+
+<style type="text/css">
+/*margin and padding on body element
+  can introduce errors in determining
+  element position and are not recommended;
+  we turn them off as a foundation for YUI
+  CSS treatments. */
+body {
+	margin:0;
+	padding:0;
+}
+</style>
+
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/fonts/fonts-min.css" />
+<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/json/json-min.js"></script>
+<script type="text/javascript" src="XHConn.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/datasource/datasource-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/charts/charts-min.js"></script>
+
+<style type="text/css">
+	#chart
+	{
+		width: 500px;
+		height: 350px;
+	}
+
+	.chart_title
+	{
+		display: block;
+		font-size: 1.2em;
+		font-weight: bold;
+		margin-bottom: 0.4em;
+	}
+</style>
+<!--end custom header content for this example-->
+
+</head>
+
+<body class=" yui-skin-sam">
+
+<span class="chart_title">Session Twice Daily Profits for Orders Chart</span>
+<div id="chart">Unable to load Flash content. The YUI Charts Control requires Flash Player 9.0.45 or higher. You can download the latest version of Flash Player from the <a href="http://www.adobe.com/go/getflashplayer">Adobe Flash Player Download Center</a></div>
+
+<script type="text/javascript">
+
+var _MAX;
+var projectName = "/CurrencyWeb/";	
+var startMax = "start=0&max=30";
+var gapSz = 0;
+var jSONObject = "";
+
+function calculateProfits1(dataArray)
+{
+	var dataLength = dataArray.length;
+	for(var i = 0; i < dataLength; i++)
+	{
+		var dataObj = dataArray[i];
+		dataObj.profits = dataObj.revenue - dataObj.expenses;
+	}
+
+	return dataArray;
+}
+
+function aggregateProfits(dataArray)
+{
+	var dataLength = dataArray.length;
+	var lastSessionProfit = 0;
+	
+	for(var i = 0; i < dataLength; i++)
+	{
+		var dataObj = dataArray[i];
+		var sessionProfit = dataObj.revenue - dataObj.expenses;
+		
+		dataObj.profits = sessionProfit + lastSessionProfit;
+		lastSessionProfit  = sessionProfit + lastSessionProfit;
+	}
+
+	return dataArray;
+}
+
+function callRestForData() {
+	var myConn = new XHConn();
+
+  	myConn.connect(projectName + "resources/totalOverTimeViews/", "GET", startMax, retHash);
+
+  	var product = null;
+  	
+	function retHash(http_request) {
+		var xmldoc = http_request.responseXML;
+		var i = 0;
+	
+		for (i=0;i<_MAX;i++)
+		{				
+			var id = xmldoc.getElementsByTagName("id")[i].textContent;
+			var sessionSum = xmldoc.getElementsByTagName("sessionSum")[i].textContent;
+
+			var sess=sessionSum.split(".");
+			var session = "";
+
+			if(sess.length>1)
+			{
+				if (sess[1].length>=2)
+					session = sess[0] + "." + sess[1].substring(0, 2);
+				if (sess[1].length==1)
+					session = sess[0] + "." + sess[1].substring(0, 1) + "0";
+				if (sess[1].length == 0) 
+					session = sess[0] + ".00";
+			} else {
+				session = sess[0] + ".00";
+			}
+				
+			var dd = (i+1)+'';
+
+			// var jsonString = '{"date":"1/' + dd + '/2009", "revenue":' + session + ', "expenses":18}';  
+			var jsonString = '{"date":"' + dd + '", "revenue":' + session + ', "expenses":18}'; 
+			
+			
+			var dSession = parseInt(session) + '';
+
+			jSONObject = jSONObject + jsonString;
+			
+			if(i < _MAX-1) {
+				jSONObject = jSONObject + ",";
+			}
+
+			try { 
+
+				product  = YAHOO.lang.JSON.parse( "[" + jSONObject + "]" ); 
+				
+			} catch (e) { 
+				alert("First One Invalid too at " + i); 
+			}								
+		}	
+		callRestForData1( product );
+	}
+}
+
+
+function callRestForData1(dailyFinancials) {
+	
+	YAHOO.widget.Chart.SWFURL = "http://yui.yahooapis.com/2.7.0/build/charts/assets/charts.swf";
+
+	var myDataSource = new YAHOO.util.DataSource(aggregateProfits(dailyFinancials));	
+	myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
+	myDataSource.responseSchema =
+	{
+		fields:
+		[
+			"date",
+			"expenses",
+			"revenue",
+			"profits"
+		]
+	};
+
+	var seriesDef = [
+		{
+			displayName:"Expenses",
+			yField:"expenses",
+			style:
+			{
+				lineColor:0xB5BAC8,
+				lineAlpha:.5,
+				borderColor:0xB5BAC8,
+				fillColor:0xB5BAC8
+			}
+		},
+		{
+			displayName:"Revenue",
+			yField:"revenue",
+			style:
+			{
+				lineColor:0xB5BAC8,
+				lineAlpha:.5,
+				borderColor:0xB5BAC8,
+				fillColor:0xffffff
+			}
+		},
+		{
+			displayName:"Profits",
+			yField:"profits",
+			style:
+			{
+				lineColor:0x79839B,
+				borderColor:0x79839B,
+				fillColor:0x79839B
+			}
+		}
+	];
+
+	//Style object
+	var styleDef =
+	{
+		xAxis:
+		{
+			majorTicks:
+			{
+				display:"inside",
+				length:3,
+				size:1
+			},
+			minorTicks:
+			{
+				display:"inside",
+				length:2
+			},
+			labelRotation: -90
+		},
+		yAxis:
+		{
+			zeroGridLine:
+			{
+				size:2,
+				color:0xff0000
+			},
+			minorTicks:{display:"none"}
+		}
+	}
+
+	//format date labels
+	YAHOO.example.formatTimeData = function(value, major)
+	{
+		var formattedData = YAHOO.util.Date.format(new Date(value), {format:"%b %e"});
+		return formattedData.toString();
+	}
+
+	//format currency labels
+	YAHOO.example.formatCurrencyAxisLabel = function( value )
+	{
+		return YAHOO.util.Number.format( value,
+		{
+			prefix: "$",
+			thousandsSeparator: ",",
+			decimalPlaces: 2
+		});
+	}
+
+	//DataTip function for the chart
+	YAHOO.example.formatDataTipText = function(item, index, series)
+	{
+		var str = series.displayName + " for " + item.date;
+		str += "\n" + YAHOO.example.formatCurrencyAxisLabel(item[(series.displayName).toLowerCase()]);
+		return str;
+	}
+
+	var myTimeAxis = new YAHOO.widget.NumericAxis();
+	myTimeAxis.minimum = 0;
+	myTimeAxis.maximum = _MAX + 3;
+	myTimeAxis.majorUnit = 1; 	
+	
+	//create a Numeric Axis for displaying dollars
+	myCurrencyAxis = new YAHOO.widget.NumericAxis();
+	myCurrencyAxis.labelFunction = YAHOO.example.formatCurrencyAxisLabel;
+
+	//create a Chart
+	var mychart = new YAHOO.widget.LineChart("chart", myDataSource,
+	{
+		series: seriesDef,
+		style: styleDef,
+		xField: "date",
+		xAxis: myTimeAxis,
+		yAxis: myCurrencyAxis,
+		dataTipFunction:YAHOO.example.formatDataTipText,
+		//only needed for flash player express install
+		expressInstall: "assets/expressinstall.swf"
+	});
+}
+
+function makeRestCharts() {
+
+	var myConn = new XHConn();
+  	myConn.connect(projectName + "resources/sessionRefMaxes/0/", "GET", startMax, restChartHash); 
+  	
+	function restChartHash(http_request) {
+
+ 		var xmldoc = http_request.responseXML;
+
+ 		_MAX = parseInt( xmldoc.getElementsByTagName("maxSession")[0].textContent )-1; // = 
+
+ 		callRestForData();
+
+	}
+}
+
+makeRestCharts();
+
+		
+</script>
+
+</body>
+</html>

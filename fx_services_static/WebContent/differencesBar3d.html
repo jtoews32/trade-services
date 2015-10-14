@@ -1,0 +1,198 @@
+﻿<html>
+<head>
+<title>Bar chart</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+	@import "jscript/dojo/resources/dojo.css";
+	@import "jscript/dijit/tests/css/dijitTests.css";
+</style>
+<script type="text/javascript" src="XHConn.js"></script>
+<script type="text/javascript" src="jscript/dojo/dojo.js" djConfig="isDebug: true"></script>
+<script type="text/javascript">
+
+dojo.require("dojox.gfx");
+dojo.require("dojox.gfx3d");
+dojo.require("dojox.charting.Chart3D");
+dojo.require("dojox.charting.plot3d.Base");
+dojo.require("dojox.charting.plot3d.Bars");
+
+makeObjects = function(){
+
+ 	var _MAX = 21;
+ 	var projectName = "/CurrencyWeb/";	
+
+	var m = dojox.gfx3d.matrix;
+	var chart = new dojox.charting.Chart3D("test", 
+		{
+			lights:   [{direction: {x: 10, y: 10, z: -10}, color: "orange"}],
+			ambient:  {color:"orange", intensity: 2},
+			specular: "ornage"
+		},
+		[m.cameraRotateXg(20), m.cameraRotateYg(-20), m.scale(0.3), m.cameraTranslate(-50, -50, 0)]
+	);
+
+	var x = 600;
+	var y = 600;
+	var len = 5;
+
+	var myConn1 = new XHConn();
+  	myConn1.connect(projectName + "resources/tradeSessionChangeJpies/", "GET", "start=0&max=200", jpyHash); 
+	var myConn2 = new XHConn();
+  	myConn2.connect(projectName + "resources/tradeSessionChangeChfs/", "GET", "start=0&max=200", chfHash); 
+	var myConn3 = new XHConn();
+  	myConn3.connect(projectName + "resources/tradeSessionChangeGbps/", "GET", "start=0&max=200", gbpHash); 
+	var myConn4 = new XHConn();
+  	myConn4.connect(projectName + "resources/tradeSessionChangeEurs/", "GET", "start=0&max=200", eurHash); 
+	var myConn5 = new XHConn();
+  	myConn5.connect(projectName + "resources/tradeSessionChangeCads/", "GET", "start=0&max=200", cadHash); 
+	var myConn6 = new XHConn();
+  	myConn6.connect(projectName + "resources/tradeSessionChangeAuds/", "GET", "start=0&max=200", audHash); 
+  	
+	function jpyHash(http_request) {
+ 		var xmldoc = http_request.responseXML;
+
+		var arrayVal = new Array();
+		var i = 0;
+		
+		for (i=0;i<_MAX;i++)
+		{				
+			var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+			var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+			var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+			arrayVal[parseInt(tradeSession)-1] = parseInt( diff ); 		
+		}
+
+		var plot1 = new dojox.charting.plot3d.Bars(x, y, {gap: len, material: "orange"});
+		plot1.setData( arrayVal );
+		chart.addPlot(plot1);
+		chart.generate().render();
+		
+	}
+
+	function chfHash(http_request) {
+ 		var xmldoc = http_request.responseXML; 
+		
+		var arrayVal = new Array();
+		var i = 0;
+		
+		for (i=0;i<_MAX;i++)
+		{				
+			var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+			var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+			var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+			arrayVal[parseInt(tradeSession)-1] = parseInt( diff ); 		
+		}
+
+		var plot1 = new dojox.charting.plot3d.Bars(x, y, {gap: len, material: "red"});
+		plot1.setData( arrayVal );
+		chart.addPlot(plot1);
+		chart.generate().render();
+	}
+	
+	function gbpHash(http_request) {
+ 		var xmldoc = http_request.responseXML;
+ 		 
+		var arrayVal = new Array();
+		var i = 0;
+		
+		for (i=0;i<_MAX;i++)
+		{				
+			var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+			var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+			var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+			arrayVal[parseInt(tradeSession)-1] = parseInt( diff ); 		
+		}
+
+		var plot1 = new dojox.charting.plot3d.Bars(x, y, {gap: len, material: "green"});
+		plot1.setData( arrayVal );
+		chart.addPlot(plot1);
+
+		chart.generate().render();
+ 	}
+
+	function eurHash(http_request) {
+ 		var xmldoc = http_request.responseXML; 
+
+		var arrayVal = new Array();
+		var i = 0;
+		
+		for (i=0;i<_MAX;i++)
+		{				
+			var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+			var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+			var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+			arrayVal[parseInt(tradeSession)-1] = parseInt( diff ); 		
+		}
+
+		var plot1 = new dojox.charting.plot3d.Bars(x, y, {gap: len, material: "blue"});
+		plot1.setData( arrayVal );
+		chart.addPlot(plot1);
+		chart.generate().render();
+	}
+
+	function cadHash(http_request) {
+ 		var xmldoc = http_request.responseXML;
+
+		var arrayVal = new Array();
+		var i = 0;
+		
+		for (i=0;i<_MAX;i++)
+		{				
+			var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+			var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+			var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+			arrayVal[parseInt(tradeSession)-1] = parseInt( diff ); 		
+		}
+
+		var plot1 = new dojox.charting.plot3d.Bars(x, y, {gap: len, material: "yellow"});
+		plot1.setData( arrayVal );
+		chart.addPlot(plot1);
+		chart.generate().render();
+	}
+
+	function audHash(http_request) {
+ 		var xmldoc = http_request.responseXML;
+
+		var arrayVal = new Array();
+		var i = 0;
+		
+		for (i=0;i<_MAX;i++)
+		{				
+			var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+			var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+			var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+			arrayVal[parseInt(tradeSession)-1] = parseInt( diff ); 		
+		}
+
+		var plot1 = new dojox.charting.plot3d.Bars(x, y, {gap: len, material: "purple"});
+		plot1.setData( arrayVal );
+		chart.addPlot(plot1);
+		chart.generate().render();	
+	}	
+	
+};
+
+dojo.addOnLoad(makeObjects);
+
+</script>
+</head>
+<body>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div id="test" style="width: 500px; height: 500px;"></div>
+<!--
+<p><button onclick="makeObjects();">Go</button></p>
+<p><textarea id="out1" cols="40" rows="5"></textarea></p>
+<p><textarea id="out2" cols="40" rows="5"></textarea></p>
+-->
+</body>
+</html>

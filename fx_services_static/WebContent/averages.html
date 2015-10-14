@@ -1,0 +1,337 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Dollar Up/Down Averages</title>
+    <style type="text/css">
+        @import "jscript/dijit/themes/tundra/tundra.css";
+        @import "jscript/dojo/resources/dojo.css"
+    </style>
+    <script type="text/javascript" src="XHConn.js"></script>
+    <script type="text/javascript" src="jscript/dojo/dojo.js" djConfig="parseOnLoad: true"></script>
+    <script type="text/javascript">
+		dojo.require("dojox.charting.Chart2D");
+		dojo.require("dojox.charting.plot2d.Pie");
+		dojo.require("dojox.charting.action2d.Highlight");
+		dojo.require("dojox.charting.action2d.MoveSlice");
+		dojo.require("dojox.charting.action2d.Tooltip");
+		dojo.require("dojox.charting.themes.MiamiNice");
+		dojo.require("dojox.charting.widget.Legend");
+
+		var urlAUD = ""; 
+		var urlCAD = ""; 
+		var urlCHF = ""; 
+		var urlEUR = ""; 
+		var urlGBP = ""; 
+		var urlJPY = ""; 
+
+		var projectName = "/CurrencyWeb/";	 // 
+		
+		function GetRESTResources( ) {
+            var myConn = new XHConn();
+            myConn.connect(projectName + "resources/averagesViewIds/", "GET", "", resources);
+
+          	function resources(XML) {
+          		var s = XML.responseXML;
+				var i = 0;
+          		for(i=0;i<6;i=i+1) {
+          			var id = s.getElementsByTagName("id")[i].textContent;
+					var currency = s.getElementsByTagName("crossName")[i].textContent; 
+
+          			if(currency == "AUD") {
+          				urlAUD = projectName + "resources/averagesViews/" + id + "/";
+          				MoveAverageAUD();		
+          			} else if ( currency =="CAD") {
+          				urlCAD = projectName + "resources/averagesViews/" + id + "/";
+          				MoveAverageCAD();
+          			} else if (currency == "CHF") {
+          				urlCHF = projectName + "resources/averagesViews/" + id + "/";
+          				MoveAverageCHF();
+          			} else if (currency =="EUR") {
+          			 	urlEUR = projectName + "resources/averagesViews/" + id + "/";
+          			 	MoveAverageEUR();
+          			} else if (currency =="GBP") {
+          				urlGBP = projectName + "resources/averagesViews/" + id + "/";
+          				MoveAverageGBP();
+          			} else if (currency == "JPY") {
+          			 	urlJPY = projectName + "resources/averagesViews/" + id + "/";
+          			 	MoveAverageJPY();
+          			} else { }
+          		}					
+          	}
+		}
+
+		var usdUpOnChf = 0;  
+		var usdDownOnChf = 100;  
+		var usdUpOnGbp = 0;  
+		var usdDownOnGbp = 100;
+		var usdUpOnEur = 0;  
+		var usdDownOnEur = 100;
+		var usdUpOnJpy = 0; 
+		var usdDownOnJpy = 100;	
+		var usdUpOnAud = 0; 
+		var usdDownOnAud = 100;						   
+		var usdUpOnCad = 0; 
+		var usdDownOnCad = 100;		
+
+
+		var tagName = "averageUp";
+		
+		function MoveAverageAUD( ) {
+            var myConn = new XHConn();
+            myConn.connect(urlAUD, "GET", "", fnAUD);
+
+          	function fnAUD(XML) {
+          		s = XML.responseXML;
+
+                var av = s.getElementsByTagName(tagName)[0].textContent;
+
+              	usdUpOnAud = parseInt(av);  
+              	usdDownOnAud = 100 - usdUpOnAud;	
+    			dojo.addOnLoad(function(){
+    				var dc = dojox.charting;
+
+    				var chartAUD = new dc.Chart2D("chartAUD");
+    				chartAUD.setTheme(dc.themes.MiamiNice)
+    				.addPlot("default", {
+    				type: "Pie",
+    				font: "normal normal 11pt Tahoma",
+    				fontColor: "black",
+    				labelOffset: -30,
+    				radius: 120
+    			}).addSeries("USD/AUD", [
+
+    				{y: usdUpOnAud, text: "", color: "purple", stroke: "black", tooltip: "USD Increases vs. AUD"},
+    				{y: usdDownOnAud, text: "USD/AUD", color: "Black", stroke: "black", tooltip: "USD Decreases vs. AUD"}
+    			]);
+    			var anim_aAUD = new dc.action2d.MoveSlice(chartAUD, "default");
+    			var anim_bAUD = new dc.action2d.Highlight(chartAUD, "default");
+    			var anim_cAUD = new dc.action2d.Tooltip(chartAUD, "default");
+    			chartAUD.render();
+    			var legendAUD = new dojox.charting.widget.Legend({chart: chartAUD}, "legendAUD");
+    				
+    				
+          		});			
+
+          	}	
+		}			
+		function MoveAverageCAD( ) {
+            var myConn = new XHConn();
+            myConn.connect(urlCAD, "GET", "", fnCAD);
+
+          	function fnCAD(XML) {
+          		s = XML.responseXML;
+                var av = s.getElementsByTagName(tagName )[0].textContent;
+              	usdUpOnCad = parseInt(av);  
+              	usdDownOnCad = 100 - usdUpOnCad;	
+    			dojo.addOnLoad(function(){
+    				var dc = dojox.charting;
+    				var chartCAD = new dc.Chart2D("chartCAD");
+    				chartCAD.setTheme(dc.themes.MiamiNice)
+    				.addPlot("default", {
+    				type: "Pie",
+    				font: "normal normal 11pt Tahoma",
+    				fontColor: "black",
+    				labelOffset: -30,
+    				radius: 120
+    			}).addSeries("USD 1 = CAD", [
+
+    				{y: usdUpOnCad, text: "", color: "yellow", stroke: "black", tooltip: "USD Increases vs. CAD"},
+    				{y: usdDownOnCad, text: "USD/CAD", color: "Black", stroke: "black", tooltip: "USD Decreases vs. CAD"}
+    			]);
+    			var anim_aCAD = new dc.action2d.MoveSlice(chartCAD, "default");
+    			var anim_bCAD = new dc.action2d.Highlight(chartCAD, "default");
+    			var anim_cCAD = new dc.action2d.Tooltip(chartCAD, "default");
+    			chartCAD.render();
+    			var legendCAD = new dojox.charting.widget.Legend({chart: chartCAD}, "legendCAD"); 
+    				
+    				
+          		});			
+          	}
+		}
+
+		function MoveAverageEUR( ) {
+            var myConn = new XHConn();
+            myConn.connect(urlEUR , "GET", "", fnEUR);
+
+          	function fnEUR(XML) {
+          		s = XML.responseXML;
+
+                var av = s.getElementsByTagName(tagName )[0].textContent;
+
+              	usdUpOnEur = parseInt(av);  
+              	usdDownOnEur = 100 - usdUpOnEur;	
+    			dojo.addOnLoad(function(){
+    	  			var dc = dojox.charting;
+    	  			var chartEUR = new dc.Chart2D("chartEUR");
+    				chartEUR.setTheme(dc.themes.MiamiNice)
+    				.addPlot("default", {
+    				type: "Pie",
+    				font: "normal normal 11pt Tahoma",
+    				fontColor: "black",
+    				labelOffset: -30,
+    				radius: 120
+    			}).addSeries("USD 1 = EUR", [
+    				{y: usdUpOnEur, text: "", color: "blue", stroke: "black", tooltip: "USD Increases vs. EUR"},
+    				{y: usdDownOnEur, text: "USD/EUR", color: "Black", stroke: "black", tooltip: "USD Decreases vs. EUR"}
+    			]);
+    			var anim_aEUR = new dc.action2d.MoveSlice(chartEUR, "default");
+    			var anim_bEUR = new dc.action2d.Highlight(chartEUR, "default");
+    			var anim_cEUR = new dc.action2d.Tooltip(chartEUR, "default");
+    			chartEUR.render();
+    			var legendEUR = new dojox.charting.widget.Legend({chart: chartEUR}, "legendEUR"); 
+
+          		});
+        		
+          	}
+		}
+
+		function MoveAverageCHF( ) {
+            var myConn = new XHConn();
+            myConn.connect(urlCHF, "GET", "", fnCHF);
+          	function fnCHF(XML) {
+          		s = XML.responseXML;
+                var av = s.getElementsByTagName(tagName )[0].textContent;
+         
+              	usdUpOnChf = parseInt(av);  
+              	usdDownOnChf = 100 - usdUpOnChf;	
+    			dojo.addOnLoad(function(){
+    				var dc = dojox.charting;
+      				var chartCHF = new dc.Chart2D("chartCHF");
+      					chartCHF.setTheme(dc.themes.MiamiNice)
+         				.addPlot("default", {
+            			type: "Pie",
+            			font: "normal normal 11pt Tahoma",
+            			fontColor: "black",
+            			labelOffset: -30,
+            			radius: 120
+      				}).addSeries("USD 1 = CHF", [
+          				{y: usdUpOnChf, text: "",  color: "red", stroke: "black", tooltip: "USD Increases vs. CHF"},
+          				{y: usdDownOnChf, text: "USD/CHF", color: "Black", stroke: "black", tooltip: "USD Decrease vs. CHF"}
+      				]);
+      				var anim_aCHF = new dc.action2d.MoveSlice(chartCHF, "default");
+      				var anim_bCHF = new dc.action2d.Highlight(chartCHF, "default");
+      				var anim_cCHF = new dc.action2d.Tooltip(chartCHF, "default");
+      				chartCHF.render();
+      				var legendCHF = new dojox.charting.widget.Legend({chart: chartCHF}, "legendCHF");
+          		});
+          	}
+		}
+		function MoveAverageGBP( ) {
+            var myConn = new XHConn();
+            myConn.connect(urlGBP, "GET", "", fnGBP);
+          	function fnGBP(XML) {
+          		s = XML.responseXML;
+
+                var av = s.getElementsByTagName(tagName )[0].textContent;
+
+    			usdUpOnGbp = parseInt(av);  
+    			usdDownOnGbp = 100 - usdUpOnGbp;			
+                dojo.addOnLoad(function(){
+                	var dc = dojox.charting;
+          			var chartGBP = new dc.Chart2D("chartGBP");
+    				chartGBP.setTheme(dc.themes.MiamiNice)
+    				.addPlot("default", {
+    				type: "Pie",
+    				font: "normal normal 11pt Tahoma",
+    				fontColor: "black",
+    				labelOffset: -30,
+    				radius: 120
+    			}).addSeries("USD 1 = GBP", [
+    				{y: usdUpOnGbp, text: "", color: "green", stroke: "black", tooltip: "USD Increases vs. GBP"},
+    				{y: usdDownOnGbp, text: "USD/GBP", color: "Black", stroke: "black", tooltip: "USD Decreases vs. GBP"}
+    			]);
+    			var anim_aGBP = new dc.action2d.MoveSlice(chartGBP, "default");
+    			var anim_bGBP = new dc.action2d.Highlight(chartGBP, "default");
+    			var anim_cGBP = new dc.action2d.Tooltip(chartGBP, "default");
+    			chartGBP.render();
+
+            	});
+          	}   
+		}	
+			
+		function MoveAverageJPY( ) {
+            var myConn = new XHConn();
+            myConn.connect(urlJPY, "GET", "", fnJPY);
+
+          	function fnJPY(XML) {
+              	s = XML.responseXML;
+
+                var av = s.getElementsByTagName(tagName )[0].textContent;
+    			usdUpOnJpy = parseInt(av);  
+    			usdDownOnJpy = 100 - usdUpOnJpy;	
+    			
+                dojo.addOnLoad(function(){
+
+                	var dc = dojox.charting;
+      			var chartJPY = new dc.Chart2D("chartJPY");
+  				chartJPY.setTheme(dc.themes.MiamiNice)
+ 				.addPlot("default", {
+    				type: "Pie",
+    				font: "normal normal 11pt Tahoma",
+    				fontColor: "black",
+    				labelOffset: -30,
+    				radius: 120
+			}).addSeries("USD 1 = JPY", [
+
+  			{y: usdUpOnJpy , text: "", color: "orange", stroke: "black", tooltip: "USD Increases vs. JPY"},
+  			{y: usdDownOnJpy, text: "USD/JPY", color: "Black", stroke: "black", tooltip: "USD Decreases vs. JPY"}
+			]);
+			var anim_aJPY = new dc.action2d.MoveSlice(chartJPY, "default");
+			var anim_bJPY = new dc.action2d.Highlight(chartJPY, "default");
+			var anim_cJPY = new dc.action2d.Tooltip(chartJPY, "default");
+			chartJPY.render();
+
+            	});
+          	} 
+		}			
+											
+		dojo.addOnLoad(function(){
+			GetRESTResources( );
+		});
+		
+	dojo.addOnLoad(makeCharts);
+
+</script>
+</head>
+
+<body class="tundra">
+
+	<center>
+	<table border="0" cellspacing="0" cellpadding="7">
+		<tr>
+			<td>	
+				<div id="chartCHF" style="width: 300px; height: 300px;"></div>
+				<!-- div id="legendCHF"></div -->
+			</td>
+			<td>	
+				<div id="chartAUD" style="width: 300px; height: 300px;"></div>
+				<!-- div id="legendAUD"></div -->
+			</td>
+			
+			<td>	
+				<div id="chartJPY" style="width: 300px; height: 300px;"></div>
+				<!-- div id="legendJPY"></div -->
+			</td>	
+
+		</tr>
+		<tr>
+			<td>	
+				<div id="chartGBP" style="width: 300px; height: 300px;"></div>
+				<!--  div id="legendGBP"></div -->
+			</td>
+			<td>	
+				<div id="chartEUR" style="width: 300px; height: 300px;"></div>
+				<!-- div id="legendEUR"></div -->
+			</td>
+			<td>
+				<div id="chartCAD" style="width: 300px; height: 300px;"></div>
+				<!-- div id="legendCAD"></div -->
+			</td>
+		</tr>
+
+	</table> 
+	</center>
+</body></html>
+

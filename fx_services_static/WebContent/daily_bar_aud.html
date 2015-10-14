@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>USD Wins and Losses</title>
+    <style type="text/css">
+        @import "jscript/dijit/themes/tundra/tundra.css";
+        @import "jscript/dojo/resources/dojo.css"
+    </style>
+
+	<script type="text/javascript" src="XHConn.js"></script>
+    <script type="text/javascript" src="jscript/dojo/dojo.js" djConfig="parseOnLoad: true"></script>
+    <script type="text/javascript">
+
+ 	dojo.require("dojox.charting.Chart2D");
+
+ 	
+ 	var _MAX = 31;
+ 	var projectName = "/CurrencyWeb/";	
+ 	var startMax = "start=0&max=30";
+ 	var gapSz = 0;
+ 	
+	function diffAUD() {
+		var myConn = new XHConn();
+	  	// myConn.connect(projectName + "resources/tradeSessionChangeAuds/", "GET", startMax, audHash); 
+
+	  	myConn.connect(projectName + "resources/tradeSessionChangeAuds/", "GET", startMax, audHash); 
+	  	
+		function audHash(http_request) {
+
+	 		var xmldoc = http_request.responseXML;
+	 		
+			var usdArrayUp = new Array();
+			var usdArrayDown = new Array();
+
+			var i = 0;
+
+			for (i=0;i<_MAX;i++)
+			{				
+				var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+				// var crossCurrency= xmldoc.getElementsByTagName("crossCurrency")[i].textContent;
+				var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+				// var id= xmldoc.getElementsByTagName("id")[i].textContent;
+				var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+				if( parseInt(dollarUp) == 0 ) {
+					usdArrayUp[parseInt(tradeSession)-1] = 0; 
+					usdArrayDown[parseInt(tradeSession)-1] = parseInt( diff );  
+				} else {
+					usdArrayDown[parseInt(tradeSession)-1] = 0; 
+					usdArrayUp[parseInt(tradeSession)-1] = parseInt( diff ); 
+				} 			
+			}
+
+			var dc = dojox.charting;
+			var chart = new dc.Chart2D("chartAUD");
+			chart.setTheme(dc.themes.PlotKit.green);
+			
+			chart.addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major"});
+			chart.addPlot("default", {type: "Columns", gap: gapSz});
+			chart.addSeries("Series A", usdArrayUp, {stroke: {color: "black"}, fill: "black"});
+			chart.addSeries("Series B", usdArrayDown, {stroke: {color: "black"}, fill: "purple"});
+
+			var anim3a = new dc.action2d.Highlight(chart, "default");
+			var anim3b = new dc.action2d.Tooltip(chart, "default");
+			chart.render();	
+		}
+	}
+
+function makeRestCharts() {
+
+	
+	var myConn = new XHConn();
+  	myConn.connect(projectName + "resources/sessionRefMaxes/0/", "GET", startMax, restChartHash); 
+  	
+	function restChartHash(http_request) {
+
+ 		var xmldoc = http_request.responseXML;
+
+ 		_MAX = parseInt( xmldoc.getElementsByTagName("maxSession")[0].textContent )-1; // = 
+
+ 		 diffAUD();
+
+	}
+}
+
+	 
+makeCharts = function() {
+	diffAUD();
+}
+
+dojo.addOnLoad(makeCharts);
+
+</script>
+</head>
+
+<body class="tundra">
+
+				<h1>Black=USD Wins vs. AUD</h1><br>		
+				<div id="chartAUD" style="width: 500px; height: 500px;"></div>
+				
+
+
+</body></html>
+

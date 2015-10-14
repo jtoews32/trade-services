@@ -1,0 +1,430 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>TabContainer Demo</title>
+    <style type="text/css">
+        @import "jscript/dijit/themes/tundra/tundra.css";
+        @import "jscript/dojo/resources/dojo.css"
+    </style>
+
+	<script type="text/javascript" src="XHConn.js"></script>
+    <script type="text/javascript" src="jscript/dojo/dojo.js" djConfig="parseOnLoad: true"></script>
+    <script type="text/javascript">
+ 	dojo.require("dojox.charting.Chart2D");
+
+ 	var projectName = "/CurrencyWeb/";	
+
+	function diffJPY() {
+		var myConn = new XHConn();
+	  	myConn.connect(projectName + "resources/tradeSessionChangeJpies/", "GET", "start=0&max=100", jpyHash); 
+
+		function jpyHash(http_request) {
+	 		var xmldoc = http_request.responseXML;
+			var crossArray;
+			var valueStore;
+
+			var jpyArray = new Array();
+
+			crossArray = new Array();
+			valueStore = new Array();
+
+			for (i=0;i<16;i++)
+			{				
+				var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+				var crossCurrency= xmldoc.getElementsByTagName("crossName")[i].textContent;
+				var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+				var id= xmldoc.getElementsByTagName("id")[i].textContent;
+				var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+				jpyArray[parseInt(tradeSession)-1] = parseInt( diff );  //valueStore[dollarUp];				
+			}
+
+	       	var chartJPY = new dojox.charting.Chart2D("chartJPY");
+	       	chartJPY.addPlot("Grid", {type: "Grid",
+	       		hAxis: "other x",
+	       		vAxis: "other y",
+	       		hMajorLines: true,	
+	       		hMinorLines: false,	
+	       		vMajorLines: true,	
+	       		vMinorLines: false,	
+	       	});
+	       		// chart1.addAxis("x");
+	       	chartJPY.addAxis("y", {vertical: true});
+	       	chartJPY.addAxis("x", { 
+	       		labels: [{value: 1, text: "1"}, 
+	       					{value: 2, text: "2"}, 
+	       					{value: 3, text: "3"}, 
+	       					{value: 4, text: "4"}, 
+	       					{value: 5, text: "5"},
+	       					{value: 6, text: "6"}, 
+	       					{value: 7, text: "7"},
+	       					{value: 8, text: "8"}, 
+	       					{value: 9, text: "9"},
+	       					{value: 10, text: "10"}, 
+	       					{value: 11, text: "11"},
+	       					{value: 12, text: "12"},
+	       					{value: 13, text: "13"},	       						       					
+	       					{value: 14, text: "14"},
+	       					{value: 15, text: "15"}]});
+	
+	       	chartJPY.addSeries("JPY", jpyArray, {stroke: {color: "orange", width: 2}, fill: "lightorange"});
+	    	chartJPY.render();	
+		}
+	}
+
+
+	function diffCHF() {
+		var myConn = new XHConn();
+	  	myConn.connect(projectName + "resources/tradeSessionChangeChfs/", "GET", "start=0&max=100", chfHash); 
+
+		function chfHash(http_request) {
+	 		var xmldoc = http_request.responseXML;
+			var crossArray;
+			var valueStore;
+
+			var chfArray = new Array();
+
+			crossArray = new Array();
+			valueStore = new Array();
+
+			for (i=0;i<16;i++)
+			{				
+				var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+				var crossCurrency= xmldoc.getElementsByTagName("crossName")[i].textContent;
+				var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+				var id= xmldoc.getElementsByTagName("id")[i].textContent;
+				var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+				chfArray[parseInt(tradeSession)-1] = parseInt( diff );  //valueStore[dollarUp];				
+			}
+
+	       	var chartCHF = new dojox.charting.Chart2D("chartCHF");
+	       	chartCHF.addPlot("Grid", {type: "Grid",
+	       		hAxis: "other x",
+	       		vAxis: "other y",
+	       		hMajorLines: true,	
+	       		hMinorLines: false,	
+	       		vMajorLines: true,	
+	       		vMinorLines: false,	
+	       	});
+
+	       	chartCHF.addAxis("y", {vertical: true});
+	       	chartCHF.addAxis("x", { 
+	       		labels: [{value: 1, text: "1"}, 
+	       					{value: 2, text: "2"}, 
+	       					{value: 3, text: "3"}, 
+	       					{value: 4, text: "4"}, 
+	       					{value: 5, text: "5"},
+	       					{value: 6, text: "6"}, 
+	       					{value: 7, text: "7"},
+	       					{value: 8, text: "8"}, 
+	       					{value: 9, text: "9"},
+	       					{value: 10, text: "10"}, 
+	       					{value: 11, text: "11"},
+	       					{value: 12, text: "12"},
+	       					{value: 13, text: "13"},	       						       					
+	       					{value: 14, text: "14"},
+	       					{value: 15, text: "15"}]});	
+	       	chartCHF.addSeries("CHF", chfArray, {stroke: {color: "red", width: 2}, fill: "lightred"});
+	    	chartCHF.render();	
+		}
+	}
+		
+
+	function diffGBP() {
+		var myConn = new XHConn();
+	  	myConn.connect(projectName + "resources/tradeSessionChangeGbps/", "GET", "start=0&max=100", gbpHash); 
+
+		function gbpHash(http_request) {
+	 		var xmldoc = http_request.responseXML;
+			var crossArray;
+			var valueStore;
+
+			var gbpArray = new Array();
+
+			crossArray = new Array();
+			valueStore = new Array();
+
+			for (i=0;i<16;i++)
+			{				
+				var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+				var crossCurrency= xmldoc.getElementsByTagName("crossName")[i].textContent;
+				var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+				var id= xmldoc.getElementsByTagName("id")[i].textContent;
+				var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+				gbpArray[parseInt(tradeSession)-1] = parseInt( diff );   //valueStore[dollarUp];				
+			}
+
+	       	var chartGBP = new dojox.charting.Chart2D("chartGBP");
+	       	chartGBP.addPlot("Grid", {type: "Grid",
+	       		hAxis: "other x",
+	       		vAxis: "other y",
+	       		hMajorLines: true,	
+	       		hMinorLines: false,	
+	       		vMajorLines: true,	
+	       		vMinorLines: false,	
+	       	});
+	       		// chart1.addAxis("x");
+	       	chartGBP.addAxis("y", {vertical: true});
+	       	chartGBP.addAxis("x", { 
+	       		labels: [{value: 1, text: "1"}, 
+	       					{value: 2, text: "2"}, 
+	       					{value: 3, text: "3"}, 
+	       					{value: 4, text: "4"}, 
+	       					{value: 5, text: "5"},
+	       					{value: 6, text: "6"}, 
+	       					{value: 7, text: "7"},
+	       					{value: 8, text: "8"}, 
+	       					{value: 9, text: "9"},
+	       					{value: 10, text: "10"}, 
+	       					{value: 11, text: "11"},
+	       					{value: 12, text: "12"},
+	       					{value: 13, text: "13"},	       						       					
+	       					{value: 14, text: "14"},
+	       					{value: 15, text: "15"}]});	
+
+	       	chartGBP.addSeries("GBP", gbpArray, {stroke: {color: "green", width: 2}, fill: "lightgreen"}); 	
+	    	chartGBP.render();	
+		}
+	}
+
+
+	function diffEUR() {
+		var myConn = new XHConn();
+	  	myConn.connect(projectName + "resources/tradeSessionChangeEurs/", "GET", "start=0&max=100", eurHash); 
+
+		function eurHash(http_request) {
+	 		var xmldoc = http_request.responseXML;
+			var crossArray;
+			var valueStore;
+
+			var eurArray = new Array();
+
+			crossArray = new Array();
+			valueStore = new Array();
+
+			for (i=0;i<16;i++)
+			{				
+				var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+				var crossCurrency= xmldoc.getElementsByTagName("crossName")[i].textContent;
+				var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+				var id= xmldoc.getElementsByTagName("id")[i].textContent;
+				var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+				eurArray[parseInt(tradeSession)-1] = parseInt( diff );   //valueStore[dollarUp];				
+			}
+
+	       	var chartEUR = new dojox.charting.Chart2D("chartEUR");
+	       	chartEUR.addPlot("Grid", {type: "Grid",
+	       		hAxis: "other x",
+	       		vAxis: "other y",
+	       		hMajorLines: true,	
+	       		hMinorLines: false,	
+	       		vMajorLines: true,	
+	       		vMinorLines: false,	
+	       	});
+	       		// chart1.addAxis("x");
+	       	chartEUR.addAxis("y", {vertical: true});
+	       	chartEUR.addAxis("x", { 
+	       		labels: [{value: 1, text: "1"}, 
+	       					{value: 2, text: "2"}, 
+	       					{value: 3, text: "3"}, 
+	       					{value: 4, text: "4"}, 
+	       					{value: 5, text: "5"},
+	       					{value: 6, text: "6"}, 
+	       					{value: 7, text: "7"},
+	       					{value: 8, text: "8"}, 
+	       					{value: 9, text: "9"},
+	       					{value: 10, text: "10"}, 
+	       					{value: 11, text: "11"},
+	       					{value: 12, text: "12"},
+	       					{value: 13, text: "13"},	       						       					
+	       					{value: 14, text: "14"},
+	       					{value: 15, text: "15"}]});	
+
+	       	chartEUR.addSeries("EUR", eurArray, {stroke: {color: "blue", width: 2}, fill: "lightblue"});
+	    	chartEUR.render();	
+		}
+	}
+
+		
+	function diffCAD() {
+		var myConn = new XHConn();
+	  	myConn.connect(projectName + "resources/tradeSessionChangeCads/", "GET", "start=0&max=100", cadHash); 
+
+		function cadHash(http_request) {
+	 		var xmldoc = http_request.responseXML;
+			var crossArray;
+			var valueStore;
+
+			var cadArray = new Array();
+
+			crossArray = new Array();
+			valueStore = new Array();
+
+			for (i=0;i<16;i++)
+			{				
+				var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+				var crossCurrency= xmldoc.getElementsByTagName("crossName")[i].textContent;
+				var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+				var id= xmldoc.getElementsByTagName("id")[i].textContent;
+				var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+				cadArray[parseInt(tradeSession)-1] = parseInt( diff );   //valueStore[dollarUp];				
+			}
+
+	       	var chartCAD = new dojox.charting.Chart2D("chartCAD");
+	       	chartCAD.addPlot("Grid", {type: "Grid",
+	       		hAxis: "other x",
+	       		vAxis: "other y",
+	       		hMajorLines: true,	
+	       		hMinorLines: false,	
+	       		vMajorLines: true,	
+	       		vMinorLines: false,	
+	       	});
+	       		// chart1.addAxis("x");
+	       	chartCAD.addAxis("y", {vertical: true});
+	       	chartCAD.addAxis("x", { 
+	       		labels: [{value: 1, text: "1"}, 
+	       					{value: 2, text: "2"}, 
+	       					{value: 3, text: "3"}, 
+	       					{value: 4, text: "4"}, 
+	       					{value: 5, text: "5"},
+	       					{value: 6, text: "6"}, 
+	       					{value: 7, text: "7"},
+	       					{value: 8, text: "8"}, 
+	       					{value: 9, text: "9"},
+	       					{value: 10, text: "10"}, 
+	       					{value: 11, text: "11"},
+	       					{value: 12, text: "12"},
+	       					{value: 13, text: "13"},	       						       					
+	       					{value: 14, text: "14"},
+	       					{value: 15, text: "15"}]});	
+
+	       	chartCAD.addSeries("CAD", cadArray, {stroke: {color: "yellow", width: 2}, fill: "lightyellow"});         	
+	    	chartCAD.render();	
+		}
+	}
+
+
+	function diffAUD() {
+		var myConn = new XHConn();
+	  	myConn.connect(projectName + "resources/tradeSessionChangeAuds/", "GET", "start=0&max=100", audHash); 
+
+		function audHash(http_request) {
+	 		var xmldoc = http_request.responseXML;
+			var crossArray;
+			var valueStore;
+
+			var audArray = new Array();
+
+			crossArray = new Array();
+			valueStore = new Array();
+
+			for (i=0;i<16;i++)
+			{				
+				var diff = xmldoc.getElementsByTagName("diff")[i].textContent;
+				var crossCurrency= xmldoc.getElementsByTagName("crossName")[i].textContent;
+				var dollarUp= xmldoc.getElementsByTagName("dollarUp")[i].textContent;
+				var id= xmldoc.getElementsByTagName("id")[i].textContent;
+				var tradeSession= xmldoc.getElementsByTagName("tradeSession")[i].textContent;
+
+				audArray[parseInt(tradeSession)-1] = parseInt( diff );   //valueStore[dollarUp];				
+			}
+
+	       	var chartAUD = new dojox.charting.Chart2D("chartAUD");
+	       	chartAUD.addPlot("Grid", {type: "Grid",
+	       		hAxis: "other x",
+	       		vAxis: "other y",
+	       		hMajorLines: true,	
+	       		hMinorLines: false,	
+	       		vMajorLines: true,	
+	       		vMinorLines: false,	
+	       	});
+	       		// chart1.addAxis("x");
+	       	chartAUD.addAxis("y", {vertical: true});
+	       	chartAUD.addAxis("x", { 
+	       		labels: [{value: 1, text: "1"}, 
+	       					{value: 2, text: "2"}, 
+	       					{value: 3, text: "3"}, 
+	       					{value: 4, text: "4"}, 
+	       					{value: 5, text: "5"},
+	       					{value: 6, text: "6"}, 
+	       					{value: 7, text: "7"},
+	       					{value: 8, text: "8"}, 
+	       					{value: 9, text: "9"},
+	       					{value: 10, text: "10"}, 
+	       					{value: 11, text: "11"},
+	       					{value: 12, text: "12"},
+	       					{value: 13, text: "13"},	       						       					
+	       					{value: 14, text: "14"},
+	       					{value: 15, text: "15"}]});	
+	       	chartAUD.addSeries("AUD", audArray, {stroke: {color: "purple", width: 2}, fill: "lightpurple"});   	
+	    	chartAUD.render();
+		}
+	}
+ 
+makeCharts = function(){
+	 diffCHF();	
+	 diffJPY();	
+	 diffGBP();
+	 diffEUR();
+	 diffCAD();
+	 diffAUD();
+}
+
+dojo.addOnLoad(makeCharts);
+
+</script>
+</head>
+
+<body class="tundra">
+	<center>
+	<table border="0" cellspacing="0" cellpadding="7">
+		<tr>
+			<td>
+				<h1>CHF</h1><br>	
+				<div id="chartCHF" style="width: 500px; height: 500px;"></div>
+				<!-- div id="legendCHF"></div -->
+			</td>
+			<td>
+				<h1>AUD</h1><br>		
+				<div id="chartAUD" style="width: 500px; height: 500px;"></div>
+				<!-- div id="legendAUD"></div -->
+			</td>
+			
+		</tr>
+		<tr>	
+			<td>
+				<h1>JPY</h1><br>		
+				<div id="chartJPY" style="width: 500px; height: 500px;"></div>
+				<!-- div id="legendJPY"></div -->
+			</td>	
+
+
+			<td>
+				<h1>GBP</h1><br>	
+				<div id="chartGBP" style="width: 500px; height: 500px;"></div>
+				<!--  div id="legendGBP"></div -->
+			</td>
+		</tr>
+		<tr>		
+			<td>
+				<h1>EUR</h1><br>		
+				<div id="chartEUR" style="width: 500px; height: 500px;"></div>
+				<!-- div id="legendEUR"></div -->
+			</td>
+			<td>
+				<h1>CAD</h1><br>	
+				<div id="chartCAD" style="width: 500px; height: 500px;"></div>
+				<!-- div id="legendCAD"></div -->
+			</td>
+		</tr>
+
+	</table> 
+	</center>
+</body></html>
+
